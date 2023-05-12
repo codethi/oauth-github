@@ -124,15 +124,6 @@ export function Signin() {
                 Sign in with <BsGithub className="text-xl" />
               </button>
             </div>
-
-            <div>
-              <button
-                type="button"
-                className="flex w-full justify-center gap-2 items-center rounded-md bg-sky-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-sky-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                Sign in with <AiFillGoogleCircle className="text-xl" />
-              </button>
-            </div>
           </form>
 
           {/* <p className="mt-10 text-center text-sm text-gray-500">
