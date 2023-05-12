@@ -1,10 +1,14 @@
 import qs from "query-string";
 import { BsGithub } from "react-icons/all";
-import { AiFillGoogleCircle } from "react-icons/all";
 import axios from "axios";
 import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 export function Signin() {
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
+  const code = query.get("code");
+
   function redirectToGitHub() {
     const GITHUB_URL = "https://github.com/login/oauth/authorize";
     const params = {
@@ -19,9 +23,8 @@ export function Signin() {
     window.location.href = `${GITHUB_URL}?${queryString}`;
   }
 
-  async function getUserCredentials() {
+  async function getUserCredentials(code) {
     try {
-      const { code } = qs.parseUrl(window.location.href).query;
       if (code) {
         const response = await axios.post("http://localhost:5000/signin", {
           code,
@@ -37,7 +40,7 @@ export function Signin() {
   }
 
   useEffect(() => {
-    getUserCredentials();
+    getUserCredentials(code);
   }, []);
 
   return (
