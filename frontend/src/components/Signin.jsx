@@ -10,9 +10,9 @@ export function Signin() {
   const code = query.get("code");
 
   function redirectToGitHub() {
-    const GITHUB_URL = "https://github.com/login/oauth/authorize";
+    const GITHUB_URL = import.meta.env.VITE_GITHUB_URL;
     const params = {
-      client_id: "b2084902a716eef37ba2",
+      client_id: import.meta.env.VITE_CLIENT_ID,
       redirect_uri: "http://127.0.0.1:5173/",
       scope: "user public_repo",
       response_type: "code",
@@ -26,9 +26,12 @@ export function Signin() {
   async function getUserCredentials(code) {
     try {
       if (code) {
-        const response = await axios.post("http://localhost:5000/signin", {
-          code,
-        });
+        const response = await axios.post(
+          `${import.meta.env.VITE_BACKEND_URL}/signin`,
+          {
+            code,
+          }
+        );
         const user = response.data;
         alert("Seja bem vindo!");
         console.log(user);
