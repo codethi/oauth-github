@@ -1,9 +1,9 @@
 import { Navigate } from "react-router-dom";
-import { AuthContext } from "../contexts/AuthProvider";
-import { useContext } from "react";
+import Cookies from "js-cookie";
 
 export function PrivateRoute({ children, redirectTo }) {
-  const { token } = useContext(AuthContext);
+  // Retorna o valor do cookie com nome "token"
+  const token = Cookies.get("token");
   const isAuthenticated = token !== "";
   //console.log("isAuth: ", isAuthenticated);
   return isAuthenticated ? children : <Navigate to={redirectTo} />;

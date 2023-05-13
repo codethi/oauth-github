@@ -1,16 +1,17 @@
 import qs from "query-string";
 import axios from "axios";
 import { BsGithub } from "react-icons/all";
+import Cookies from "js-cookie";
 
 import { useEffect, useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { AuthContext } from "../contexts/AuthProvider";
+import { UserContext } from "../contexts/UserContext";
 
 export function Signin() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { setToken } = useContext(AuthContext);
+  const { setUser } = useContext(UserContext);
 
   const query = new URLSearchParams(location.search);
   const code = query.get("code");
@@ -38,8 +39,8 @@ export function Signin() {
             code,
           }
         );
-        const { user } = response.data;
-        setToken(response.data.token);
+        setUser(response.data.user);
+        Cookies.set("token", response.data.token, { expires: 1 / 24 }); // Armazena o token em um cookie com nome "token" que expira em 1 hora
         navigate("/home");
       }
     } catch (err) {
