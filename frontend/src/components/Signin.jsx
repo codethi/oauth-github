@@ -1,56 +1,31 @@
-import qs from "query-string";
-import axios from "axios";
 import { BsGithub } from "react-icons/all";
+import { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useContext } from "react";
 import Cookies from "js-cookie";
 
-import { useEffect, useContext } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { redirectToGitHub } from "../services/RedirectToGitHub";
+import { getGithubUserService } from "../services/GetUserCredentials";
 
 import { UserContext } from "../contexts/UserContext";
 
 export function Signin() {
   const location = useLocation();
-  const navigate = useNavigate();
-  const { setUser } = useContext(UserContext);
-
   const query = new URLSearchParams(location.search);
   const code = query.get("code");
 
-  function redirectToGitHub() {
-    const GITHUB_URL = import.meta.env.VITE_GITHUB_URL;
-    const params = {
-      client_id: import.meta.env.VITE_CLIENT_ID,
-      redirect_uri: "http://127.0.0.1:5173/",
-      scope: "user public_repo",
-      response_type: "code",
-    };
+  const navigate = useNavigate();
+  const { setUser } = useContext(UserContext);
 
-    const queryString = qs.stringify(params);
-
-    window.location.href = `${GITHUB_URL}?${queryString}`;
-  }
-
-  async function getUserCredentials(code) {
-    try {
-      if (code) {
-        const response = await axios.post(
-          `${import.meta.env.VITE_BACKEND_URL}/signin`,
-          {
-            code,
-          }
-        );
-        setUser(response.data.user);
-        Cookies.set("token", response.data.token, { expires: 1 / 24 }); // Armazena o token em um cookie com nome "token" que expira em 1 hora
-        navigate("/home");
-      }
-    } catch (err) {
-      alert("Deu ruim");
-      console.log(err.message);
-    }
+  async function getGithubUser() {
+    const { user, token } = getGithubUserService();
+    setUser(user);
+    Cookies.set("token", token, { expires: 1 / 24 });
+    navigate("/home");
   }
 
   useEffect(() => {
-    getUserCredentials(code);
+    if (code) getGithubUser(code);
   }, []);
 
   return (
