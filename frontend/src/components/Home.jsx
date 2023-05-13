@@ -1,3 +1,7 @@
+import { UserContext } from "../contexts/UserContext";
+import { useContext } from "react";
+
 export function Home() {
-    return <h1>Seja bem vindo!</h1>
+  const { user } = useContext(UserContext);
+  return <h1>Seja bem vindo! {user.name}</h1>;
 }
