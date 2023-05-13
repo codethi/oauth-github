@@ -1,11 +1,17 @@
 import qs from "query-string";
-import { BsGithub } from "react-icons/all";
 import axios from "axios";
-import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { BsGithub } from "react-icons/all";
+
+import { useEffect, useContext } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+
+import { AuthContext } from "../contexts/AuthProvider";
 
 export function Signin() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { setToken } = useContext(AuthContext);
+
   const query = new URLSearchParams(location.search);
   const code = query.get("code");
 
@@ -32,9 +38,9 @@ export function Signin() {
             code,
           }
         );
-        const user = response.data;
-        alert("Seja bem vindo!");
-        console.log(user);
+        const { user } = response.data;
+        setToken(response.data.token);
+        navigate("/home");
       }
     } catch (err) {
       alert("Deu ruim");
