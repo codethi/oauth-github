@@ -5,6 +5,5 @@ export function PrivateRoute({ children, redirectTo }) {
   // Retorna o valor do cookie com nome "token"
   const token = Cookies.get("token");
   const isAuthenticated = token !== "";
-  //console.log("isAuth: ", isAuthenticated);
   return isAuthenticated ? children : <Navigate to={redirectTo} />;
 }

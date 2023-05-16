@@ -21,6 +21,5 @@ export async function exchangeCodeForAccessToken(codeClient) {
   });
 
   const parseData = qs.parse(data);
-  console.log(parseData);
   return parseData.access_token;
 }

@@ -1,6 +1,7 @@
 import axios from "axios";
 
 export async function getGithubUserService(code) {
+  /* console.log(code) */
   try {
     const response = await axios.post(
       `${import.meta.env.VITE_BACKEND_URL}/signin`,

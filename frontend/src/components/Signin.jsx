@@ -1,13 +1,8 @@
 import { BsGithub } from "react-icons/all";
-import { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useContext } from "react";
-import Cookies from "js-cookie";
-
-import { redirectToGitHub } from "../services/RedirectToGitHub";
-import { getGithubUserService } from "../services/GetUserCredentials";
-
-import { UserContext } from "../contexts/UserContext";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate, Navigate } from "react-router-dom";
+import qs from "query-string";
+import { Home } from "./Home";
 
 export function Signin() {
   const location = useLocation();
@@ -15,18 +10,28 @@ export function Signin() {
   const code = query.get("code");
 
   const navigate = useNavigate();
-  const { setUser } = useContext(UserContext);
 
-  async function getGithubUser() {
-    const { user, token } = getGithubUserService();
-    setUser(user);
-    Cookies.set("token", token, { expires: 1 / 24 });
-    navigate("/home");
+  async function handleGithubOauth(event) {
+    event.preventDefault();
+
+    const GITHUB_URL = import.meta.env.VITE_GITHUB_URL;
+    const params = {
+      client_id: import.meta.env.VITE_CLIENT_ID,
+      redirect_uri: "http://127.0.0.1:5173/",
+      scope: "user public_repo",
+      response_type: "code",
+    };
+    const queryString = qs.stringify(params);
+    window.location.href = `${GITHUB_URL}?${queryString}`;
   }
 
-  useEffect(() => {
-    if (code) getGithubUser(code);
-  }, []);
+  /*  useEffect(() => {
+    if (code) navigate(`/home/?code=${code}`);
+  }, [code]); */
+
+  if (code) {
+    return <Navigate to="/home" state={{ code }} />;
+  }
 
   return (
     <>
@@ -107,7 +112,7 @@ export function Signin() {
               <button
                 type="button"
                 className="flex w-full justify-center gap-2 items-center rounded-md bg-zinc-900 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-zinc-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                onClick={redirectToGitHub}
+                onClick={handleGithubOauth}
               >
                 Sign in with <BsGithub className="text-xl" />
               </button>
